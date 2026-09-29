@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://branch1.bullheadhotels.co.ke/sitemap.xml
