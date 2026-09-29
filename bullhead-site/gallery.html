@@ -40,27 +40,30 @@
 <header class="site-nav" id="siteNav">
   <a href="/" class="nav-mark"><img src="/assets/img/logo-mark.png" alt="" class="nav-logo" width="254" height="223">Bullhead</a>
   <nav class="nav-links">
-    <a href="/">Home</a>
-    <a href="/menu">Menu</a>
-    <a href="/visit">Visit</a>
-    <a href="/contact">Contact</a>
+    <a href="/" data-sw="Nyumbani">Home</a>
+    <a href="/menu" data-sw="Menyu">Menu</a>
+    <a href="/visit" data-sw="Tembelea">Visit</a>
+    <a href="/contact" data-sw="Wasiliana">Contact</a>
+    <a href="/gallery" class="active" aria-current="page" data-sw="Picha">Gallery</a>
   </nav>
   <div style="display:flex; align-items:center;">
+    <button id="langToggle" type="button" style="margin-right:10px; background:none; border:1px solid currentColor; border-radius:999px; padding:4px 10px; font-size:0.8rem; cursor:pointer;">SW</button>
     <a href="https://wa.me/254720707323" class="nav-cta" target="_blank" rel="noopener">WhatsApp</a>
     <button class="nav-burger" id="navBurger" aria-label="Open menu"><span></span><span></span><span></span></button>
   </div>
 </header>
 <div class="mobile-menu" id="mobileMenu">
-  <a href="/">Home</a>
-  <a href="/menu">Menu</a>
-  <a href="/visit">Visit</a>
-  <a href="/contact">Contact</a>
+  <a href="/" data-sw="Nyumbani">Home</a>
+  <a href="/menu" data-sw="Menyu">Menu</a>
+  <a href="/visit" data-sw="Tembelea">Visit</a>
+  <a href="/contact" data-sw="Wasiliana">Contact</a>
+  <a href="/gallery" class="active" data-sw="Picha">Gallery</a>
 </div>
 
 <main class="gal">
-  <p class="gal-kicker">Gallery</p>
-  <h1>Life at Bullhead</h1>
-  <p class="gal-sub">The counter, the grill and the road outside. We never close, so there's always something to see.</p>
+  <p class="gal-kicker" data-sw="Picha">Gallery</p>
+  <h1 data-sw="Maisha Bullhead">Life at Bullhead</h1>
+  <p class="gal-sub" data-sw="Kaunta, moto wa kuchoma na barabara nje. Hatufungi kamwe, kwa hivyo daima kuna kitu cha kuona.">The counter, the grill and the road outside. We never close, so there's always something to see.</p>
   <div class="gal-grid" id="gg"><p class="gal-empty">Loading…</p></div>
 </main>
 
@@ -98,6 +101,33 @@
   }).catch(function () { g.innerHTML = '<p class="gal-empty">Could not load photos. Please try again.</p>'; });
   lb.onclick = function () { lb.classList.remove('on'); };
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lb.classList.remove('on'); });
+})();
+</script>
+<script>
+(function () {
+  var STORAGE_KEY = 'bullheadLang';
+  var els = document.querySelectorAll('[data-sw]');
+  els.forEach(function (el) { el.dataset.en = el.innerHTML; });
+  var toggle = document.getElementById('langToggle');
+
+  function apply(lang) {
+    els.forEach(function (el) {
+      el.innerHTML = lang === 'sw' ? el.dataset.sw : el.dataset.en;
+    });
+    if (toggle) toggle.textContent = lang === 'sw' ? 'EN' : 'SW';
+  }
+
+  var saved = localStorage.getItem(STORAGE_KEY) || 'en';
+  apply(saved);
+
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      var current = localStorage.getItem(STORAGE_KEY) || 'en';
+      var next = current === 'en' ? 'sw' : 'en';
+      localStorage.setItem(STORAGE_KEY, next);
+      apply(next);
+    });
+  }
 })();
 </script>
 </body>
