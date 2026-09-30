@@ -20,25 +20,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css?v=10">
+<link rel="stylesheet" href="/css/style.css?v=9">
 <style>
-  .gal { max-width: 1240px; margin: 0 auto; padding: 130px 20px 70px; }
+  .gal { max-width: 1100px; margin: 0 auto; padding: 130px 20px 70px; }
   .gal-kicker { color: var(--cognac); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: .8rem; margin: 0 0 8px; }
   .gal h1 { font-family: var(--font-display); font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.1; margin: 0 0 8px; }
   .gal-sub { color: var(--ink-soft); margin: 0 0 30px; max-width: 46ch; }
-  .gal-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
-  .gal-grid figure { --cols: 1; position: relative; margin: 0; flex: 0 0 calc((100% - (var(--cols) - 1) * 16px) / var(--cols)); aspect-ratio: 4 / 3; background: var(--ink); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(36, 23, 18, .10); cursor: zoom-in; transition: transform .2s ease, box-shadow .2s ease; }
-  .gal-grid figure:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(36, 23, 18, .16); }
-  .gal-grid img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
-  .gal-grid figure:hover img { transform: scale(1.04); }
-  .gal-grid figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 30px 14px 12px; font-size: .9rem; color: #fff; background: linear-gradient(to top, rgba(22, 14, 10, .82), transparent); }
-  @media (min-width: 560px) { .gal-grid figure { --cols: 2; } }
-  @media (min-width: 900px) { .gal-grid figure { --cols: 3; } }
-  @media (min-width: 1200px) { .gal-grid:not(.few) figure { --cols: 4; } }
-  /* few photos: bigger tiles so nothing is upscaled into blur or floats in empty space */
-  .gal-grid.few { max-width: 900px; margin: 0 auto; }
-  .gal-grid.few figure { --cols: 1; }
-  @media (min-width: 560px) { .gal-grid.few figure { --cols: 2; } }
+  .gal-grid { columns: 3 260px; column-gap: 14px; }
+  .gal-grid figure { margin: 0 0 14px; break-inside: avoid; background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid var(--cream-deep); box-shadow: 0 8px 24px rgba(36, 23, 18, .07); cursor: zoom-in; transition: transform .2s ease; }
+  .gal-grid figure:hover { transform: translateY(-3px); }
+  .gal-grid img { width: 100%; display: block; }
+  .gal-grid figcaption { padding: 10px 14px 12px; font-size: .9rem; color: var(--ink-soft); }
   .gal-empty { color: var(--ink-soft); padding: 40px 0; }
   .lb { position: fixed; inset: 0; background: rgba(20, 12, 9, .92); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 200; cursor: zoom-out; flex-direction: column; gap: 12px; }
   .lb.on { display: flex; }
@@ -100,7 +92,7 @@
   <p class="footer-legal">&copy; <span class="js-year">2026</span> Bullhead Butchery &amp; Hotel. All rights reserved.</p>
 </footer>
 
-<script src="/js/main.js?v=10"></script>
+<script src="/js/main.js?v=9"></script>
 <script>
 (function () {
   var g = document.getElementById('gg'), lb = document.getElementById('lb');
@@ -110,7 +102,6 @@
     ['zone-chips-point.jpg','Chips Point'],
     ['zone-hotel.jpg','Bull Head Hotel']
   ];
-  function tag() { g.classList.toggle('few', g.children.length <= 4); }
   function showLocal() {
     g.innerHTML = '';
     LOCAL.forEach(function (p) {
@@ -119,7 +110,6 @@
       f.onclick = function () { document.getElementById('lbImg').src = src; document.getElementById('lbCap').textContent = p[1]; lb.classList.add('on'); };
       g.appendChild(f);
     });
-    tag();
   }
   fetch('/api/photos').then(function (r) { return r.json(); }).then(function (d) {
     g.innerHTML = '';
@@ -132,7 +122,6 @@
       f.onclick = function () { document.getElementById('lbImg').src = q + v; document.getElementById('lbCap').textContent = p.caption || ''; lb.classList.add('on'); };
       g.appendChild(f);
     });
-    tag();
   }).catch(function () { showLocal(); });
   lb.onclick = function () { lb.classList.remove('on'); };
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lb.classList.remove('on'); });

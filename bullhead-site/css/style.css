@@ -17,7 +17,8 @@
   --font-display: 'Fraunces', serif;
   --font-body: 'Inter', sans-serif;
 
-  --edge: max(clamp(20px, 6vw, 64px), calc((100vw - 1240px) / 2)); /* keeps content in a centred 1240px column on big screens */
+  --edge-narrow: clamp(20px, 6vw, 64px); /* original edge, for boxes that have their own max-width */
+  --edge: max(var(--edge-narrow), calc((100vw - 1240px) / 2)); /* keeps full-width sections in a centred 1240px column on big screens */
 }
 
 * { box-sizing: border-box; }
@@ -927,7 +928,7 @@ body.has-live-update .hero-open-badge { top: calc(84px + var(--strip-h)); }
 .contact-wrap {
   max-width: 640px;
   margin: 0 auto;
-  padding: clamp(56px, 8vw, 96px) var(--edge) 120px;
+  padding: clamp(56px, 8vw, 96px) var(--edge-narrow) 120px;
 }
 .order-summary {
   background: #fff;
@@ -1175,8 +1176,10 @@ body.has-live-update .hero-open-badge { top: calc(84px + var(--strip-h)); }
    DESKTOP POLISH (wide screens)
    ============================================ */
 /* Visit page: location card becomes photo+text on the left, map on the right */
+/* same as the inline style this class replaced, so phones/tablets are unchanged */
+.locations-grid.locations-one { grid-template-columns: 1fr; max-width: 560px; }
 @media (min-width: 900px) {
-  .locations-grid.locations-one { grid-template-columns: 1fr; max-width: none; }
+  .locations-grid.locations-one { max-width: none; }
   .locations-one .location-card {
     display: grid;
     grid-template-columns: 1fr 1.25fr;
@@ -1190,14 +1193,10 @@ body.has-live-update .hero-open-badge { top: calc(84px + var(--strip-h)); }
     border-top: 0; border-left: 1px solid rgba(36,23,18,0.08);
   }
   .location-link + .location-link { margin-left: 18px; }
-}
-@media (max-width: 899px) {
-  .locations-grid.locations-one { max-width: 560px; }
+  .visit-block { max-width: 34ch; }
 }
 /* Cards that were 5/4 get very tall on big monitors */
 @media (min-width: 1100px) {
   .explore-card { aspect-ratio: 16/10; }
   .page-hero { height: 52vh; max-height: 560px; }
 }
-/* Hours / contact / pay blocks: never stretch across a 4K screen */
-.visit-block { max-width: 34ch; }
