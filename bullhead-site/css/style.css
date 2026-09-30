@@ -1195,6 +1195,12 @@ body.has-live-update .hero-open-badge { top: calc(84px + var(--strip-h)); }
   .location-link + .location-link { margin-left: 18px; }
   .visit-block { max-width: 34ch; }
 }
+/* Hero text box: --edge grows on big screens (centred 1240px column), but the hero box pads BOTH sides and has
+   its own 780px cap, so on wide monitors the text was squeezed into a sliver. Widen the cap by the extra padding so
+   the text keeps its normal width. Only applies above 1368px, where --edge starts to exceed --edge-narrow. */
+@media (min-width: 1369px) {
+  .hero-content { max-width: calc(780px + 2 * (var(--edge) - var(--edge-narrow))); }
+}
 /* Cards that were 5/4 get very tall on big monitors */
 @media (min-width: 1100px) {
   .explore-card { aspect-ratio: 16/10; }

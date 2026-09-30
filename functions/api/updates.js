@@ -61,7 +61,9 @@ async function handleTap(request, env, id) {
 
 export async function onRequestGet(context) {
   const { request, env } = context;
-  const updates = await readUpdates(env);
+  // If this site has no KV namespace bound (or KV hiccups) we still want the main site's shared notices to show.
+  let updates = [];
+  try { updates = await readUpdates(env); } catch (e) { /* fall through with no local notices */ }
   const now = Date.now();
 
   // Owner view: everything (live + past) with tap counts, never cached.
