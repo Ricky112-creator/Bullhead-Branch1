@@ -72,8 +72,22 @@ export async function onRequestGet(context) {
     return json({ updates: updates.map((u) => ({ ...u, taps: (u.taps || 0) + (taps[u.id] || 0) })) }, { headers: { 'Cache-Control': 'no-store' } });
   }
 
-  const live = updates
-    .filter((u) => !u.expiresAt || new Date(u.expiresAt).getTime() > now)
+  // The owner dashboard posts to the MAIN site (bullheadhotels.co.ke), which stores notices in its own KV
+  // and tags each with 'Both sites' / 'Bullhead One' / 'Bullhead Two'. This branch site has its own KV,
+  // so it also asks the main site for what applies here (its own + shared notices) and merges the two.
+  const MAIN = 'https://bullheadhotels.co.ke', BRANCH = 'one';
+  let shared = [];
+  try {
+    const r = await fetch(MAIN + '/api/updates?branch=' + BRANCH, { cf: { cacheTtl: 30, cacheEverything: true } });
+    if (r.ok) { const d = await r.json(); shared = Array.isArray(d.updates) ? d.updates : []; }
+  } catch (e) { /* main site unreachable: fall back to this site's own notices */ }
+
+  const seen = new Set();
+  const live = shared
+    .concat(updates.filter((u) => !u.expiresAt || new Date(u.expiresAt).getTime() > now))
+    .filter((u) => u && u.id && !seen.has(u.id) && seen.add(u.id))
+    .filter((u) => !u.branch || u.branch === BRANCH)
+    .sort((a, b) => new Date(b.postedAt) - new Date(a.postedAt))
     .slice(0, 5)
     .map(({ taps, ...pub }) => pub); // keep stats private
 
