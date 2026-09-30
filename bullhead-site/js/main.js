@@ -191,7 +191,7 @@ if (nav) {
   if (bannerEl) {
     const toggleNav = () => {
       const bannerBottom = bannerEl.getBoundingClientRect().bottom;
-      nav.classList.toggle('scrolled', bannerBottom <= 80);
+      nav.classList.toggle('scrolled', bannerBottom <= 80 || window.scrollY > 40);
     };
     window.addEventListener('scroll', toggleNav, { passive: true });
     toggleNav();

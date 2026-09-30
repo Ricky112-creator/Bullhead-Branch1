@@ -17,7 +17,7 @@
   --font-display: 'Fraunces', serif;
   --font-body: 'Inter', sans-serif;
 
-  --edge: clamp(20px, 6vw, 64px);
+  --edge: max(clamp(20px, 6vw, 64px), calc((100vw - 1240px) / 2)); /* keeps content in a centred 1240px column on big screens */
 }
 
 * { box-sizing: border-box; }
@@ -1169,3 +1169,35 @@ body.has-live-update .hero-open-badge { top: calc(84px + var(--strip-h)); }
 .eta-field input { position: absolute; opacity: 0; pointer-events: none; }
 .eta-field span { display: inline-block; padding: 9px 16px; border: 1.5px solid rgba(36,23,18,0.25); border-radius: 999px; font-weight: 600; font-size: 0.9rem; }
 .eta-field input:checked + span { background: var(--red); border-color: var(--red); color: #fff; }
+
+
+/* ============================================
+   DESKTOP POLISH (wide screens)
+   ============================================ */
+/* Visit page: location card becomes photo+text on the left, map on the right */
+@media (min-width: 900px) {
+  .locations-grid.locations-one { grid-template-columns: 1fr; max-width: none; }
+  .locations-one .location-card {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    grid-template-areas: "media map" "info map";
+    grid-template-rows: auto 1fr;
+  }
+  .locations-one .location-media { grid-area: media; aspect-ratio: 16/10; }
+  .locations-one .location-info { grid-area: info; align-self: center; padding: 32px; }
+  .locations-one .location-map {
+    grid-area: map; aspect-ratio: auto; min-height: 420px;
+    border-top: 0; border-left: 1px solid rgba(36,23,18,0.08);
+  }
+  .location-link + .location-link { margin-left: 18px; }
+}
+@media (max-width: 899px) {
+  .locations-grid.locations-one { max-width: 560px; }
+}
+/* Cards that were 5/4 get very tall on big monitors */
+@media (min-width: 1100px) {
+  .explore-card { aspect-ratio: 16/10; }
+  .page-hero { height: 52vh; max-height: 560px; }
+}
+/* Hours / contact / pay blocks: never stretch across a 4K screen */
+.visit-block { max-width: 34ch; }
