@@ -1,6 +1,6 @@
 // GET /api/summary?date=YYYY-MM-DD -> owner only: the day's numbers (Nairobi time) + a WhatsApp-ready text
 import { ensureSchema } from './push.js';
-import { json, requireRole } from '../_lib/auth.js';
+import { json, requireRole, serverError } from '../_lib/auth.js';
 const TZ = 3 * 3600e3, TYPE = { 'dine-in': 'Dine in', delivery: 'Delivery', 'drive-through': 'Drive-through', reserve: 'Reservation', 'on-the-way': 'On my way' };
 
 export async function onRequestGet({ request, env }) {
@@ -37,5 +37,5 @@ export async function onRequestGet({ request, env }) {
     } else text += '\n\nNo orders sent through the website this day.';
     text += '\n\n(Website orders only. Walk-in sales are not counted. Orders count as sales once marked Done.)';
     return json({ date, orders: orders.length, completed: done.length, sales, text });
-  } catch (e) { return json({ error: String(e.message || e) }, { status: 500 }); }
+  } catch (e) { return serverError(e, 'summary'); }
 }
