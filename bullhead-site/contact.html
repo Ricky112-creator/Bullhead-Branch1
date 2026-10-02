@@ -186,72 +186,7 @@
 <script src="js/order-utils.js"></script>
 <script src="js/contact-page.js"></script>
 <script src="js/main.js?v=13"></script>
-<script>
-(function () {
-  var STORAGE_KEY = 'bullheadLang';
-  var els = document.querySelectorAll('[data-sw]');
-  els.forEach(function (el) { el.dataset.en = el.innerHTML; });
-  var toggle = document.getElementById('langToggle');
-
-  function apply(lang) {
-    els.forEach(function (el) {
-      el.innerHTML = lang === 'sw' ? el.dataset.sw : el.dataset.en;
-    });
-    if (toggle) toggle.textContent = lang === 'sw' ? 'EN' : 'SW';
-  }
-
-  var saved = localStorage.getItem(STORAGE_KEY) || 'en';
-  apply(saved);
-
-  if (toggle) {
-    toggle.addEventListener('click', function () {
-      var current = localStorage.getItem(STORAGE_KEY) || 'en';
-      var next = current === 'en' ? 'sw' : 'en';
-      localStorage.setItem(STORAGE_KEY, next);
-      apply(next);
-    });
-  }
-})();
-</script>
-<script>
-(function () {
-  var btn = document.getElementById('shareOrderBtn');
-  var hint = document.getElementById('shareOrderHint');
-  if (!btn || !hint || typeof getCart !== 'function') return;
-
-  function encodeCart(cart) {
-    return Object.entries(cart).map(function (pair) {
-      return pair[0] + ':' + pair[1];
-    }).join(',');
-  }
-
-  btn.addEventListener('click', function () {
-    var cart = getCart();
-    if (!cart || Object.keys(cart).length === 0) {
-      hint.hidden = false;
-      hint.textContent = "Nothing to share yet — build an order on the Menu first.";
-      return;
-    }
-    var url = window.location.origin + '/menu?order=' + encodeURIComponent(encodeCart(cart));
-
-    if (navigator.share) {
-      navigator.share({ title: 'Bullhead order', url: url }).catch(function () {});
-      return;
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(function () {
-        hint.hidden = false;
-        hint.textContent = 'Link copied — paste it to whoever\'s ordering: ' + url;
-      }).catch(function () {
-        hint.hidden = false;
-        hint.textContent = url;
-      });
-    } else {
-      hint.hidden = false;
-      hint.textContent = url;
-    }
-  });
-})();
-</script>
+<script src="/js/lang-toggle.js"></script>
+<script src="/js/contact-share.js"></script>
 </body>
 </html>
