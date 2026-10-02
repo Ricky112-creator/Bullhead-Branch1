@@ -25,6 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=15">
 <link rel="stylesheet" href="css/relay.css?v=2">
+<link rel="stylesheet" href="css/bh-motion.css?v=1">
 </head>
 <body>
 <a class="skip-link" href="#top" data-sw="Rukia hadi maudhui makuu">Skip to main content</a>
@@ -166,6 +167,18 @@
     </div>
   </section>
 
+  <!-- REVEAL BAND -->
+  <section class="bh-band" aria-label="The Bullhead One crew">
+    <div class="bh-band__stick">
+      <img class="bh-band__img" loading="lazy" decoding="async" src="assets/img/band-crew.webp" alt="The Fish Point crew in front of the counter at Bullhead One" width="1920" height="1080">
+      <div class="bh-band__shade"></div>
+      <div class="bh-band__panel">
+        <h2 data-sw="Kaunta nne, jiko moja.">Four counters, one kitchen.</h2>
+        <p data-sw="Moto uleule, mikono ileile, na kiti kwa yeyote anayetaka kukaa.">The same fire, the same hands, and a chair for whoever wants one.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- THE RELAY -->
   <section class="relay" id="relay" data-branch="one" aria-label="How an order reaches the counter">
     <div class="relay-in">
@@ -194,6 +207,25 @@
   </section>
 
   <!-- LOOK AROUND -->
+  <!-- AROUND THE TABLES -->
+  <section class="bh-car" aria-roledescription="carousel" aria-label="Around Bullhead One">
+    <div class="bh-car__head">
+      <p class="bh-car__kicker" data-sw="Bullhead One">Bullhead One</p>
+      <h2 class="bh-car__title" data-sw="Maisha ya kila siku">Around the tables</h2>
+    </div>
+    <div class="bh-car__track" tabindex="0" role="group" aria-label="Photos, swipe or use the arrow keys">
+      <figure class="bh-car__slide"><img src="assets/img/tables-1-service.webp" alt="A server bringing food to a table at Bull Head Hotel" width="1200" height="900"><figcaption data-sw="Huduma mezani">Service at Bull Head Hotel</figcaption></figure>
+      <figure class="bh-car__slide"><img loading="lazy" decoding="async" src="assets/img/tables-2-guests.webp" alt="Three guests sharing a table" width="1200" height="900"><figcaption data-sw="Wageni mezani">Guests at the tables</figcaption></figure>
+      <figure class="bh-car__slide"><img loading="lazy" decoding="async" src="assets/img/tables-3-dining.webp" alt="The dining room with orange chairs and staff in hairnets" width="1200" height="900"><figcaption data-sw="Chumba cha kulia">The dining room</figcaption></figure>
+      <figure class="bh-car__slide"><img loading="lazy" decoding="async" src="assets/img/tables-4-oven.webp" alt="A cook turning meat in the charcoal oven" width="1200" height="900"><figcaption data-sw="Jiko la makaa">Turning the meat in the charcoal oven</figcaption></figure>
+      <figure class="bh-car__slide"><img loading="lazy" decoding="async" src="assets/img/tables-5-water.webp" alt="Three bottles of Bull Head Hotel drinking water" width="1200" height="900"><figcaption data-sw="Maji ya kunywa">Bull Head Hotel drinking water</figcaption></figure>
+    </div>
+    <div class="bh-car__ui">
+      <div class="bh-car__dots"></div>
+      <div class="bh-car__arrows"><button type="button" data-prev aria-label="Previous photo">&#8592;</button><button type="button" data-next aria-label="Next photo">&#8594;</button></div>
+    </div>
+  </section>
+
   <section class="explore">
     <h2 data-sw="Angalia Karibu">Look around</h2>
     <div class="explore-grid">
@@ -246,6 +278,7 @@
 <script src="js/relay.js?v=2"></script>
 <script src="js/rightnow.js?v=1"></script>
 <script src="js/story-slides.js?v=1"></script>
+<script src="js/bh-motion.js?v=1"></script>
 <script src="/js/install-prompt.js"></script>
 <script src="/js/home-lang.js"></script>
 </body>

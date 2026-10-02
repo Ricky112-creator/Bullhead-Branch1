@@ -1,0 +1,61 @@
+/* Bullhead motion kit: scroll-snap carousel + scroll-reveal band. No libraries. */
+
+/* ---------- Carousel ---------- */
+.bh-car { position: relative; padding: 56px 0 40px; background: var(--cream); }
+.bh-car__head { padding: 0 var(--edge); margin-bottom: 22px; }
+.bh-car__kicker { margin: 0 0 6px; font: 600 .78rem/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: var(--rust); }
+.bh-car__title { font-size: clamp(1.7rem, 4.2vw, 2.6rem); line-height: 1.1; margin: 0; }
+.bh-car__track {
+  display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory;
+  padding: 4px var(--edge) 10px; scroll-padding-inline: var(--edge);
+  scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+}
+.bh-car__track::-webkit-scrollbar { display: none; }
+.bh-car__track:focus-visible { outline: 3px solid var(--cognac); outline-offset: 4px; border-radius: 14px; }
+.bh-car__slide {
+  flex: 0 0 min(86vw, 640px); scroll-snap-align: center; margin: 0; position: relative;
+  border-radius: 18px; overflow: hidden; background: var(--cream-deep); aspect-ratio: 4 / 3;
+  box-shadow: 0 10px 28px rgba(36, 23, 18, .14);
+}
+.bh-car__slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bh-car__slide figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 38px 18px 14px; color: #fff;
+  font: 500 .95rem/1.3 var(--font-body); background: linear-gradient(to top, rgba(20, 12, 8, .72), rgba(20, 12, 8, 0));
+}
+.bh-car__ui { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px var(--edge) 0; }
+.bh-car__dots { display: flex; gap: 8px; }
+.bh-car__dots button { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: rgba(36, 23, 18, .25); cursor: pointer; transition: width .25s ease, background .25s ease; }
+.bh-car__dots button[aria-current="true"] { width: 26px; border-radius: 6px; background: var(--ink); }
+.bh-car__arrows { display: none; gap: 10px; }
+.bh-car__arrows button {
+  width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(36, 23, 18, .25); background: #fff;
+  color: var(--ink); font-size: 1.15rem; cursor: pointer; transition: transform .2s ease, background .2s ease;
+}
+.bh-car__arrows button:hover { background: var(--ink); color: #fff; transform: scale(1.06); }
+.bh-car__arrows button:disabled { opacity: .35; pointer-events: none; }
+@media (hover: hover) and (min-width: 760px) { .bh-car__arrows { display: flex; } }
+
+/* ---------- Scroll-reveal band ---------- */
+.bh-band { --p: 1; --t: 1; position: relative; background: var(--ink); color: #fff; }
+.bh-band__stick { position: relative; min-height: 78vh; overflow: hidden; display: flex; align-items: flex-end; }
+.bh-band__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.bh-band__shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(20, 12, 8, .78), rgba(20, 12, 8, .15) 55%, rgba(20, 12, 8, .0)); }
+.bh-band__panel {
+  position: relative; z-index: 1; margin: 0 var(--edge) clamp(24px, 6vh, 56px); max-width: 520px;
+  padding: 22px 24px; border-radius: 18px; background: rgba(36, 23, 18, .42);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, .16);
+}
+.bh-band__panel h2 { color: #fff; font-size: clamp(1.7rem, 4.6vw, 2.8rem); line-height: 1.08; margin: 0 0 10px; }
+.bh-band__panel p { margin: 0; color: rgba(255, 255, 255, .9); font-size: 1.02rem; }
+
+/* Motion only when the visitor hasn't asked for less and JS has opted the band in */
+@media (prefers-reduced-motion: no-preference) {
+  .bh-band.is-live { height: 150vh; }
+  .bh-band.is-live .bh-band__stick { position: sticky; top: 0; height: 100vh; min-height: 0; }
+  .bh-band.is-live .bh-band__img {
+    transform: scale(calc(1.22 - .22 * var(--p)));
+    clip-path: inset(calc((1 - var(--p)) * 16%) calc((1 - var(--p)) * 9%) round calc((1 - var(--p)) * 32px));
+    will-change: transform, clip-path;
+  }
+  .bh-band.is-live .bh-band__panel { opacity: var(--t); transform: translateY(calc((1 - var(--t)) * 28px)); }
+}

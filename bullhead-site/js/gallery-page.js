@@ -12,7 +12,19 @@
     ['gallery-09-tables.webp','Tables ready at Bull Head Hotel'],
     ['gallery-10-fishpoint.webp','Fish Point'],
     ['gallery-11-chipspoint.webp','Chips Point'],
-    ['gallery-12-water.webp','Bull Head Hotel drinking water, 1.5 litres']
+    ['gallery-12-water.webp','Bull Head Hotel drinking water, 1.5 litres'],
+    ['gallery-13-oven-tray.webp','Turning the meat in the charcoal oven'],
+    ['gallery-14-guests.webp','Guests at the tables'],
+    ['gallery-15-service.webp','Service at Bull Head Hotel'],
+    ['gallery-16-dining.webp','The dining room'],
+    ['gallery-17-fishpoint-crew.webp','The Fish Point crew'],
+    ['gallery-18-water-cold.webp','Bull Head Hotel drinking water'],
+    ['gallery-19-round-table.webp','A round table, ready for a group'],
+    ['gallery-20-hotel-window.webp','Bull Head Hotel and the butchery window'],
+    ['gallery-21-chipspoint-hotel.webp','Chips Point and Bull Head Hotel'],
+    ['gallery-22-fishpoint-two.webp','Two of the Fish Point team'],
+    ['gallery-23-table-jug.webp','A table set with water'],
+    ['gallery-24-fishpoint-front.webp','Fish Point']
   ];
   function showLocal() {
     g.innerHTML = '';
