@@ -535,6 +535,12 @@ body.has-live-update .hero-open-badge { top: calc(84px + var(--strip-h)); }
   position: absolute;
   inset: 0;
 }
+.story-slides img { opacity: 0; transition: opacity .9s ease; }
+.story-slides img.on { opacity: 1; }
+.story-dots { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; gap: 8px; justify-content: center; z-index: 2; }
+.story-dots button { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,.55); cursor: pointer; box-shadow: 0 0 0 1px rgba(0,0,0,.25); transition: width .25s, background .25s; }
+.story-dots button.on { width: 24px; border-radius: 6px; background: #fff; }
+@media (prefers-reduced-motion: reduce) { .story-slides img { transition: none; } }
 .story-copy {
   background: var(--cream);
   padding: clamp(48px, 8vw, 96px) var(--edge);
