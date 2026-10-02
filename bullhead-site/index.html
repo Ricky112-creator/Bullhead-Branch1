@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=13">
+<link rel="stylesheet" href="css/style.css?v=14">
 <link rel="stylesheet" href="css/relay.css?v=2">
 </head>
 <body>
@@ -104,8 +104,12 @@
 
   <!-- CONDENSED STORY -->
   <section class="story">
-    <div class="story-media">
-      <img loading="lazy" src="assets/img/banner-storefront.webp" alt="Bullhead One on the Nairobi-Mombasa road in Emali" width="1600" height="720">
+    <div class="story-media story-slides" role="group" aria-roledescription="carousel" aria-label="Bullhead One in pictures">
+      <img src="assets/img/story-1-frontage.webp" alt="Bullhead One on the Nairobi-Mombasa road in Emali" width="1400" height="1000" class="on">
+      <img loading="lazy" src="assets/img/story-2-choma.webp" alt="Nyama choma on the grill pan" width="1400" height="1000">
+      <img loading="lazy" src="assets/img/story-3-oven.webp" alt="A cook loading the charcoal oven" width="1400" height="1000">
+      <img loading="lazy" src="assets/img/story-4-dining.webp" alt="The dining room, counter and aquarium" width="1400" height="1000">
+      <img loading="lazy" src="assets/img/story-5-fryer.webp" alt="Chips at the fryer" width="1400" height="1000">
     </div>
     <div class="story-copy">
       <h2 data-sw="Ilianza kama bucha moja katika mtaa huu.">It started as one butchery on this street.</h2>
@@ -194,7 +198,7 @@
         </div>
       </a>
       <a href="/visit" class="explore-card">
-        <img loading="lazy" src="assets/img/visit-portrait.webp" alt="Bullhead One storefront" width="720" height="1600">
+        <img loading="lazy" src="assets/img/visit-card.webp" alt="Bullhead One storefront" width="1200" height="900">
         <div class="explore-card-scrim"></div>
         <div class="explore-card-label">
           <h3 data-sw="Tembelea">Visit</h3>
@@ -233,6 +237,7 @@
 <script src="js/main.js?v=13"></script>
 <script src="js/relay.js?v=2"></script>
 <script src="js/rightnow.js?v=1"></script>
+<script src="js/story-slides.js?v=1"></script>
 <script src="/js/install-prompt.js"></script>
 <script src="/js/home-lang.js"></script>
 </body>
