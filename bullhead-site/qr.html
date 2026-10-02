@@ -10,9 +10,4 @@ body{margin:0;font-family:Inter,system-ui,sans-serif;background:#eee;color:#2417
 <div class="bar"><b>Table QR posters</b><label>Tables 1 to <input id="n" type="number" min="1" max="60" value="10"></label><button id="mk">Make posters</button><button id="pr">Print</button><small>A5, one per page. Save as PDF to send to a printer.</small></div>
 <div id="out"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-function make(){var o=document.getElementById('out');o.innerHTML='';var n=+document.getElementById('n').value||1;
-for(var i=1;i<=n;i++){var d=document.createElement('div');d.className='p';d.innerHTML='<div><h1>Bullhead</h1><h2>Order from your seat</h2><small>Agiza ukiwa umekaa</small></div><div><small>TABLE · MEZA</small><div class="tn">'+i+'</div></div><div class="q"></div><small>Scan · open the menu · tap send.<br>Skani · fungua menyu · tuma.</small>';
-o.appendChild(d);new QRCode(d.querySelector('.q'),{text:location.origin+'/menu?table='+i,width:300,height:300,correctLevel:QRCode.CorrectLevel.M})}}
-document.getElementById('mk').onclick=make;document.getElementById('pr').onclick=function(){window.print()};make();
-</script></body></html>
+<script src="/js/qr-page.js"></script></body></html>
