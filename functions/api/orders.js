@@ -16,7 +16,8 @@
 //
 // Orders live in a D1 database (binding: DB), one row per order. Tables are created automatically.
 import { ensureSchema, notifyOwner } from './push.js';
-import { json, ipHash, requireRole } from '../_lib/auth.js';
+import { json, ipHash, requireRole, serverError } from '../_lib/auth.js';
+import menuData from '../../bullhead-site/js/menu-data.js';   // the same price list the site shows (one source of truth)
 
 const MAX_KEEP = 3000;     // finished / cancelled / unconfirmed rows kept (live orders are never trimmed)
 const MAX_LIST = 150;      // rows the dashboard loads
@@ -27,7 +28,23 @@ const TYPES = ['dine-in', 'delivery', 'drive-through', 'reserve', 'on-the-way'];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const PIN_RE = /^https:\/\/maps\.google\.com\/\?q=-?\d{1,3}(\.\d+)?,-?\d{1,3}(\.\d+)?$/;
 const str = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
-const fail = (e) => json({ error: String((e && e.message) || e) }, { status: 500 });
+const fail = (e) => serverError(e, 'orders');
+
+// The menu exactly as customers see it right now: the base list in js/menu-data.js, then the owner's saved prices and
+// added dishes from KV (the same rules as applyMenuOverrides() in js/cart.js). Prices come from here, never from the browser.
+async function liveMenu(env) {
+  const idx = new Map(menuData.MENU_ITEMS.map((i) => [i.id, { id: i.id, name: i.name, price: i.price, unit: i.unit || '' }]));
+  try {
+    if (env.UPDATES_KV) {
+      const raw = await env.UPDATES_KV.get('menu');
+      const cust = await env.UPDATES_KV.get('menu-custom');
+      (cust ? JSON.parse(cust) : []).forEach((c) => { if (c && c.id && !idx.has(c.id)) idx.set(c.id, { id: c.id, name: c.name, price: c.price, unit: c.unit || '' }); });
+      const o = raw ? JSON.parse(raw) : {};
+      for (const [id, m] of Object.entries(o)) { const it = idx.get(id); if (it && m && typeof m.price === 'number') it.price = m.price; }
+    }
+  } catch (e) { console.error('[orders] could not read the live menu, using the base prices', (e && e.stack) || e); }
+  return idx;
+}
 
 // Kenyan mobile number in any usual spelling -> 2547XXXXXXXX / 2541XXXXXXXX, or '' if it isn't one.
 function normPhone(v) {
@@ -68,9 +85,17 @@ export async function onRequestPost({ request, env, waitUntil }) {
   let b; try { b = await request.json(); } catch { return json({ error: 'Invalid JSON' }, { status: 400 }); }
   const type = str(b.type, 20);
   if (!TYPES.includes(type)) return json({ error: 'Bad order type' }, { status: 400 });
-  const items = (Array.isArray(b.items) ? b.items : []).slice(0, 30).map((i) => ({
-    id: str(i.id, 40), name: str(i.name, 60), qty: Math.min(Number(i.qty) || 0, 100), unit: i.unit === 'kg' ? 'kg' : '', lineTotal: Math.min(Number(i.lineTotal) || 0, 1e6),
-  })).filter((i) => i.name && i.qty > 0);
+  // Prices, names and units come from OUR menu. The browser only says which dish (id) and how many.
+  const menu = await liveMenu(env);
+  const items = [];
+  for (const i of (Array.isArray(b.items) ? b.items : []).slice(0, 30)) {
+    const m = menu.get(str(i && i.id, 40));
+    const raw = Number(i && i.qty) || 0;
+    if (raw <= 0) continue;
+    if (!m || typeof m.price !== 'number') return json({ error: 'Our menu has changed since you opened this page. Please refresh the page and check your order.' }, { status: 400 });
+    const qty = m.unit === 'kg' ? Math.min(Math.round(raw * 100) / 100, 100) : Math.min(Math.max(Math.round(raw), 1), 100);   // whole portions, except kg
+    items.push({ id: m.id, name: m.name, qty, unit: m.unit, lineTotal: Math.round(m.price * qty * 100) / 100 });
+  }
   // A table reservation is a real request even with no food and no note.
   if (!items.length && !str(b.notes, 10) && type !== 'reserve') return json({ error: 'Empty order' }, { status: 400 });
 

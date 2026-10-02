@@ -10,6 +10,13 @@ export const json = (d, init) => new Response(JSON.stringify(d), {
   headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', ...(init && init.headers) },
 });
 
+// Unexpected failures: the real error (stack, SQL, table names) goes to the server log only; the browser
+// gets a generic message.
+export function serverError(e, where) {
+  console.error('[' + (where || 'api') + ']', (e && e.stack) || e);
+  return json({ error: 'Something went wrong on our side. Please try again in a moment.' }, { status: 500 });
+}
+
 const enc = new TextEncoder();
 const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
 export const sha256 = async (s) => hex(await crypto.subtle.digest('SHA-256', enc.encode(s)));

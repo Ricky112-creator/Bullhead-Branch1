@@ -16,7 +16,7 @@
 // service worker shows "New Bullhead order". That keeps this file small and means
 // no order details ever pass through the browser vendors' push servers.
 
-import { json, requireRole } from '../_lib/auth.js';
+import { json, requireRole, serverError } from '../_lib/auth.js';
 const MAX_SUBS = 10;
 
 // ---------- database ----------
@@ -102,7 +102,7 @@ export async function onRequestPost({ request, env }) {
     ]);
     return json({ ok: true });
   } catch (e) {
-    return json({ error: String(e.message || e) }, { status: 500 });
+    return serverError(e, 'push');
   }
 }
 
@@ -115,6 +115,6 @@ export async function onRequestDelete({ request, env }) {
     if (b.endpoint) await env.DB.prepare('DELETE FROM push_subs WHERE endpoint = ?').bind(String(b.endpoint)).run();
     return json({ ok: true });
   } catch (e) {
-    return json({ error: String(e.message || e) }, { status: 500 });
+    return serverError(e, 'push');
   }
 }
