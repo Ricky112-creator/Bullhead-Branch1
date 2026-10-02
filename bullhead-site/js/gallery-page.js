@@ -1,10 +1,18 @@
 (function () {
   var g = document.getElementById('gg'), lb = document.getElementById('lb');
   var LOCAL = [
-    ['bullhead-one-storefront.jpg','Bullhead One on the Nairobi-Mombasa road'],
-    ['zone-butchery-choma.jpg','Bull Head Butchery and Choma Zone'],
-    ['zone-chips-point.jpg','Chips Point'],
-    ['zone-hotel.jpg','Bull Head Hotel']
+    ['gallery-01-frontage.webp','Bullhead One on the Nairobi-Mombasa road: Fish Point, Chips Point, Bull Head Hotel and the Butchery'],
+    ['gallery-02-choma.webp','Nyama choma, straight off the pan'],
+    ['gallery-03-chips.webp','Fresh chips from the Chips Point kitchen'],
+    ['gallery-04-chicken.webp','Chicken in the Chips Point warmer'],
+    ['gallery-05-oven.webp','The charcoal oven, loaded with meat'],
+    ['gallery-06-fryer.webp','Chips coming out of the fryer'],
+    ['gallery-07-hotel.webp','Seating at Bull Head Hotel'],
+    ['gallery-08-counter.webp','The counter, the warmer and the aquarium'],
+    ['gallery-09-tables.webp','Tables ready at Bull Head Hotel'],
+    ['gallery-10-fishpoint.webp','Fish Point'],
+    ['gallery-11-chipspoint.webp','Chips Point'],
+    ['gallery-12-water.webp','Bull Head Hotel drinking water, 1.5 litres']
   ];
   function showLocal() {
     g.innerHTML = '';
