@@ -59,3 +59,59 @@
   }
   .bh-band.is-live .bh-band__panel { opacity: var(--t); transform: translateY(calc((1 - var(--t)) * 28px)); }
 }
+
+/* ---------- Walk the strip ---------- */
+.bh-walk { background: var(--ink); color: #fff; }
+.bh-walk__head { padding: 56px var(--edge) 18px; }
+.bh-walk__head .bh-car__kicker { color: #f0b48a; }
+.bh-walk__head h2 { color: #fff; font-size: clamp(1.7rem, 4.2vw, 2.6rem); line-height: 1.1; margin: 0 0 8px; }
+.bh-walk__head p { margin: 0; color: rgba(255,255,255,.78); max-width: 46ch; }
+.bh-walk__frame { overflow: hidden; }
+.bh-walk__img { display: block; width: 100%; height: auto; }
+.bh-walk__cards { display: grid; gap: 14px; padding: 22px var(--edge) 48px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.bh-walk__stop { padding: 18px 20px; border-radius: 16px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); }
+.bh-walk__no { margin: 0 0 6px; font: 600 .74rem/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: #f0b48a; }
+.bh-walk__stop h3 { margin: 0 0 6px; color: #fff; font-size: 1.35rem; line-height: 1.15; }
+.bh-walk__stop p { margin: 0 0 14px; color: rgba(255,255,255,.86); font-size: .98rem; }
+.bh-walk__stop .btn { display: inline-block; }
+.bh-walk__dots { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .bh-walk.is-live .bh-walk__runway { height: 360vh; position: relative; }
+  .bh-walk.is-live .bh-walk__stick { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+  .bh-walk.is-live .bh-walk__head { padding-top: 84px; padding-bottom: 0; }
+  .bh-walk.is-live .bh-walk__frame { height: min(46svh, 420px); }
+  .bh-walk.is-live .bh-walk__img { width: auto; height: 100%; max-width: none; transform: translate3d(var(--x, 0px), 0, 0); will-change: transform; }
+  .bh-walk.is-live .bh-walk__cards { display: block; position: relative; padding: 0 var(--edge); min-height: 190px; }
+  .bh-walk.is-live .bh-walk__stop { position: absolute; left: var(--edge); right: var(--edge); max-width: 460px; opacity: 0; transform: translateY(14px); pointer-events: none; transition: opacity .35s ease, transform .35s ease; }
+  .bh-walk.is-live .bh-walk__stop.is-on { opacity: 1; transform: none; pointer-events: auto; }
+  .bh-walk.is-live .bh-walk__dots { display: flex; gap: 8px; padding: 0 var(--edge) 18px; margin: 0; list-style: none; }
+  .bh-walk.is-live .bh-walk__dots li { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.28); transition: width .25s ease, background .25s ease; }
+  .bh-walk.is-live .bh-walk__dots li.is-on { width: 26px; border-radius: 6px; background: #fff; }
+}
+
+/* ---------- Hero entrance ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-media { animation: bhPush 16s cubic-bezier(.2, .6, .2, 1) both; }
+  .hero-logo, .hero-kicker, .hero-headline, .hero-sub, .hero-actions { animation: bhRise .9s cubic-bezier(.2, .7, .2, 1) both; animation-delay: var(--d, 0s); }
+  .hero-logo { --d: .05s; } .hero-kicker { --d: .2s; } .hero-headline { --d: .35s; } .hero-sub { --d: .65s; } .hero-actions { --d: .85s; }
+  @keyframes bhPush { from { transform: scale(1.07); } to { transform: scale(1); } }
+  @keyframes bhRise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+}
+
+.menu-category { scroll-margin-top: 96px; }
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
+  .bh-walk.is-live .bh-walk__stick {
+    display: grid; grid-template-columns: minmax(300px, 400px) minmax(0, 1fr); grid-template-rows: 1fr auto 1fr;
+    column-gap: clamp(28px, 4vw, 56px); align-content: center; padding: 0 var(--edge); gap: 0 clamp(28px, 4vw, 56px);
+  }
+  .bh-walk.is-live .bh-walk__head { grid-column: 1; grid-row: 1; align-self: end; padding: 84px 0 18px; }
+  .bh-walk.is-live .bh-walk__cards { grid-column: 1; grid-row: 2; padding: 0; min-height: 210px; }
+  .bh-walk.is-live .bh-walk__stop { left: 0; right: 0; max-width: none; }
+  .bh-walk.is-live .bh-walk__dots { grid-column: 1; grid-row: 3; align-self: start; padding: 18px 0 0; }
+  .bh-walk.is-live .bh-walk__frame {
+    grid-column: 2; grid-row: 1 / span 3; align-self: center; height: min(66svh, 620px);
+    border-radius: 20px; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); margin-top: 40px;
+  }
+}

@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .map((cat) => {
       const items = MENU_ITEMS.filter((i) => i.category === cat).sort((a, b) => (b.special ? 1 : 0) - (a.special ? 1 : 0));
       return `
-        <div class="menu-category">
+        <div class="menu-category" id="${esc(cat).toLowerCase().replace(/&amp;|&/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}">
           <h3 class="menu-category-title">${esc(cat)}</h3>
           <div class="menu-items">
             ${items
@@ -101,3 +101,14 @@ document.addEventListener('DOMContentLoaded', () => {
   refreshBoard();
   setInterval(refreshBoard, 30000);
 });
+
+/* Deep links like /menu#fish-specialty scroll to that category once the list has rendered. */
+(function () {
+  var id = decodeURIComponent((location.hash || '').slice(1));
+  if (!id) return;
+  var tries = 0, t = setInterval(function () {
+    var el = document.getElementById(id);
+    if (el) { clearInterval(t); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    else if (++tries > 20) clearInterval(t);
+  }, 250);
+})();
