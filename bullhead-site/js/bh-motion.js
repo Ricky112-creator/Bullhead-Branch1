@@ -59,3 +59,36 @@
     upd();
   });
 })();
+
+/* ----- walk the strip: sticky pan across the frontage, one counter at a time ----- */
+(function () {
+  var walk = document.querySelector('.bh-walk');
+  if (!walk || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var run = walk.querySelector('.bh-walk__runway'), img = walk.querySelector('.bh-walk__img');
+  var stops = Array.prototype.slice.call(walk.querySelectorAll('.bh-walk__stop'));
+  var dots = Array.prototype.slice.call(walk.querySelectorAll('.bh-walk__dots li'));
+  var fr = stops.map(function (s) { return parseFloat(s.getAttribute('data-x')); });
+  if (!run || !img || !stops.length) return;
+  walk.classList.add('is-live');
+  var on = false, last = -1;
+  function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+  var tick = (function () { var w = false; return function () { if (w) return; w = true; requestAnimationFrame(function () { w = false; draw(); }); }; })();
+  function draw() {
+    if (!on) return;
+    var r = run.getBoundingClientRect(), vh = window.innerHeight || 800;
+    var p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
+    var seg = p * (stops.length - 1), i = Math.floor(seg), f = seg - i;
+    var vw = img.parentElement.clientWidth, W = img.clientWidth;
+    function at(k) { return clamp(vw / 2 - fr[k] * W, vw - W, 0); }
+    var a = at(clamp(i, 0, stops.length - 1)), b = at(clamp(i + 1, 0, stops.length - 1));
+    var ease = f * f * (3 - 2 * f);
+    img.style.setProperty('--x', (a + (b - a) * ease).toFixed(1) + 'px');
+    var act = clamp(Math.round(seg), 0, stops.length - 1);
+    if (act !== last) { last = act; stops.forEach(function (s, n) { s.classList.toggle('is-on', n === act); }); dots.forEach(function (d, n) { d.classList.toggle('is-on', n === act); }); }
+  }
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { on = es[0].isIntersecting; if (on) tick(); }, { rootMargin: '20% 0px' }).observe(run); else on = true;
+  window.addEventListener('scroll', tick, { passive: true });
+  window.addEventListener('resize', tick);
+  if (img.complete) tick(); else img.addEventListener('load', tick);
+  tick();
+})();
