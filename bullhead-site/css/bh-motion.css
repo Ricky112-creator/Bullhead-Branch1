@@ -100,3 +100,18 @@
 }
 
 .menu-category { scroll-margin-top: 96px; }
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
+  .bh-walk.is-live .bh-walk__stick {
+    display: grid; grid-template-columns: minmax(300px, 400px) minmax(0, 1fr); grid-template-rows: 1fr auto 1fr;
+    column-gap: clamp(28px, 4vw, 56px); align-content: center; padding: 0 var(--edge); gap: 0 clamp(28px, 4vw, 56px);
+  }
+  .bh-walk.is-live .bh-walk__head { grid-column: 1; grid-row: 1; align-self: end; padding: 84px 0 18px; }
+  .bh-walk.is-live .bh-walk__cards { grid-column: 1; grid-row: 2; padding: 0; min-height: 210px; }
+  .bh-walk.is-live .bh-walk__stop { left: 0; right: 0; max-width: none; }
+  .bh-walk.is-live .bh-walk__dots { grid-column: 1; grid-row: 3; align-self: start; padding: 18px 0 0; }
+  .bh-walk.is-live .bh-walk__frame {
+    grid-column: 2; grid-row: 1 / span 3; align-self: center; height: min(66svh, 620px);
+    border-radius: 20px; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); margin-top: 40px;
+  }
+}

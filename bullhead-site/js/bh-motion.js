@@ -79,7 +79,7 @@
     var p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
     var seg = p * (stops.length - 1), i = Math.floor(seg), f = seg - i;
     var vw = img.parentElement.clientWidth, W = img.clientWidth;
-    function at(k) { return clamp(vw / 2 - fr[k] * W, vw - W, 0); }
+    function at(k) { return W <= vw ? (vw - W) / 2 : clamp(vw / 2 - fr[k] * W, vw - W, 0); }
     var a = at(clamp(i, 0, stops.length - 1)), b = at(clamp(i + 1, 0, stops.length - 1));
     var ease = f * f * (3 - 2 * f);
     img.style.setProperty('--x', (a + (b - a) * ease).toFixed(1) + 'px');
