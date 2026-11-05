@@ -9,11 +9,11 @@
 //    If a page ever needs a new outside host, add it here or the browser will block it (the console says which rule).
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
+  "script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://static.cloudflareinsights.com 'unsafe-hashes' 'sha256-1jAmyYXcRq6zFldLe/GCgIDJBiOONdXjTLgEFMDnDSM='",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
-  "img-src 'self' data: blob:",
-  "connect-src 'self'",
+  "img-src 'self' data: blob: https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com",
+  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com",
   "frame-src https://www.google.com",
   "frame-ancestors 'self'",
   "base-uri 'self'",
