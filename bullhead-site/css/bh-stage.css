@@ -1,0 +1,84 @@
+/* Bullhead stage layer: hero slideshow, depth parallax, 3D tilt, page transitions. No libraries. */
+
+/* ---------- Hero deck ---------- */
+.st-deck { position: absolute; inset: -3%; transform: translate3d(calc(var(--px, 0) * 14px), calc(var(--py, 0) * 10px), 0); transition: transform .9s cubic-bezier(.2, .8, .2, 1); will-change: transform; }
+.st-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s cubic-bezier(.4, 0, .2, 1); transform-origin: var(--o, 50% 50%); overflow: hidden; }
+.st-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.st-slide.on { opacity: 1; z-index: 2; }
+.st-slide.out { opacity: 0; z-index: 1; }
+.st-slide.on, .st-slide.out { animation: st-push 9s cubic-bezier(.25, .1, .25, 1) both; }
+@keyframes st-push { from { transform: scale(1.02); } to { transform: scale(1.12); } }
+.hero.is-paused .st-slide.on { animation-play-state: paused; }
+
+/* legibility: the photo is busy, the copy is not allowed to fight it */
+.hero-scrim { background:
+  linear-gradient(100deg, rgba(18, 11, 8, .82) 0%, rgba(18, 11, 8, .5) 38%, rgba(18, 11, 8, 0) 70%),
+  linear-gradient(to top, rgba(18, 11, 8, .9) 0%, rgba(18, 11, 8, .35) 34%, rgba(18, 11, 8, 0) 60%) !important; z-index: 3; }
+.hero-kicker { color: #fff !important; text-shadow: 0 1px 12px rgba(0, 0, 0, .55); }
+.hero-content { z-index: 4; transform: translate3d(calc(var(--px, 0) * -7px), calc(var(--py, 0) * -5px), 0); transition: transform .9s cubic-bezier(.2, .8, .2, 1); }
+
+/* ---------- Hero controls: tag + segmented progress ---------- */
+.st-ui { position: absolute; z-index: 5; left: var(--edge); right: var(--edge); bottom: 26px; display: flex; align-items: center; gap: 18px; }
+.st-segs { display: flex; gap: 6px; flex: 0 1 340px; }
+.st-seg { position: relative; flex: 1; height: 28px; padding: 0; border: 0; background: none; cursor: pointer; }
+.st-seg::before { content: ""; position: absolute; left: 0; right: 0; top: 12px; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, .3); }
+.st-seg i { position: absolute; left: 0; top: 12px; height: 3px; width: 0; border-radius: 3px; background: #fff; }
+.st-seg.done i { width: 100%; }
+.st-seg.on i { animation: st-fill var(--dur, 6.5s) linear forwards; }
+.hero.is-paused .st-seg.on i { animation-play-state: paused; }
+.st-seg:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 4px; }
+@keyframes st-fill { to { width: 100%; } }
+.st-tag { color: #fff; font: 500 .9rem/1.2 var(--font-body); text-shadow: 0 1px 10px rgba(0, 0, 0, .6); min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st-tag b { font-weight: 600; }
+.st-tag.swap { animation: st-tag .7s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes st-tag { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (max-width: 720px) { .st-ui { bottom: 18px; gap: 12px; } .st-segs { flex-basis: 200px; } .hero-content { padding-bottom: 84px; } }
+
+/* ---------- 3D tilt cards ---------- */
+.st-tilt { transform-style: preserve-3d; position: relative; }
+.zones-grid .explore-card.st-tilt, .st-tilt.bh-card { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px)); transition: transform .6s cubic-bezier(.2, .8, .2, 1), box-shadow .4s ease; }
+.st-tilt.is-live { transition: transform .08s linear, box-shadow .4s ease !important; --ty: -6px; }
+.st-tilt::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s ease; background: radial-gradient(420px circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, .22), transparent 55%); mix-blend-mode: soft-light; }
+.st-tilt.is-live::after { opacity: 1; }
+.st-tilt .explore-card-label { transform: translateZ(36px); }
+
+/* ---------- Magnetic CTAs (individual transform property: never fights hover lift) ---------- */
+.btn { translate: var(--mx, 0px) var(--my, 0px); }
+
+/* ---------- Page transitions (cross-document View Transitions) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  .site-nav { view-transition-name: bh-nav; }
+  ::view-transition-old(root) { animation: st-out .32s cubic-bezier(.4, 0, 1, 1) both; }
+  ::view-transition-new(root) { animation: st-in .6s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes st-out { to { opacity: 0; transform: scale(.985); filter: blur(4px); } }
+  @keyframes st-in { from { opacity: 0; transform: translateY(18px); } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-slide.on, .st-slide.out { animation: none; }
+  .st-deck, .hero-content { transform: none !important; }
+}
+
+/* ---------- Inner-page reels ---------- */
+.page-hero .st-deck { inset: 0; transform: none; z-index: 0; }
+
+/* ---------- Mobile action bar: the four things a hungry traveller does next ---------- */
+.st-abar { display: none; }
+@media (max-width: 759px) {
+  body.has-abar { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  .st-abar { position: fixed; z-index: 70; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); display: grid; grid-template-columns: 1.35fr 1fr 1fr 1fr; gap: 6px; padding: 6px; border-radius: 22px;
+    background: rgba(28, 17, 12, .88); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); box-shadow: 0 14px 34px rgba(0, 0, 0, .38), inset 0 0 0 1px rgba(255, 255, 255, .08);
+    transform: translateY(140%); transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
+  .st-abar.is-in { transform: none; }
+  .st-abar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 52px; border-radius: 16px; color: #fff; font: 600 .72rem/1 var(--font-body); text-decoration: none; -webkit-tap-highlight-color: transparent; transition: transform .15s ease, background .2s ease; }
+  .st-abar a:active { transform: scale(.94); }
+  .st-abar a.st-go { background: var(--red); flex-direction: row; gap: 8px; font-size: .9rem; }
+  .st-abar svg { width: 20px; height: 20px; }
+  .st-abar a.st-go svg { width: 18px; height: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { .st-abar { transition: none; } }
+
+/* the "Open now" pill is fixed; once the hero is gone it only sits on top of body copy */
+.hero-open-badge { transition: opacity .35s ease, transform .35s ease; }
+body.st-past .hero-open-badge { opacity: 0; transform: translateY(-8px); pointer-events: none; }
