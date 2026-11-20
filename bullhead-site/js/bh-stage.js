@@ -158,3 +158,68 @@
   function upd() { document.body.classList.toggle('st-past', hero.getBoundingClientRect().bottom < 90); }
   window.addEventListener('scroll', upd, { passive: true }); upd();
 })();
+
+/* ----- embers ----- */
+(function () {
+  var strip = document.querySelector('.strip');
+  if (!strip || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var cv = document.createElement('canvas'); cv.className = 'st-embers'; cv.setAttribute('aria-hidden', 'true'); strip.insertBefore(cv, strip.firstChild);
+  var ctx = cv.getContext('2d'); if (!ctx) return;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2), w = 0, h = 0, P = [], raf = 0, last = 0;
+  var sp = document.createElement('canvas'); sp.width = sp.height = 48; var sx = sp.getContext('2d'), g = sx.createRadialGradient(24, 24, 0, 24, 24, 24);
+  g.addColorStop(0, 'rgba(255,236,170,1)'); g.addColorStop(.25, 'rgba(255,160,70,.8)'); g.addColorStop(.6, 'rgba(232,80,43,.22)'); g.addColorStop(1, 'rgba(232,51,43,0)'); sx.fillStyle = g; sx.fillRect(0, 0, 48, 48);
+  function mk(init) { var z = Math.random(); return { x: Math.random() * w, y: init ? Math.random() * h : h + 20, z: z, vx: (Math.random() - .5) * .12, vy: .22 + z * .8, s: 3 + z * 9, ph: Math.random() * 6.28, a: .25 + z * .6 }; }
+  function size() { w = strip.clientWidth; h = strip.clientHeight; cv.width = w * dpr; cv.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); var n = Math.min(w < 600 ? 22 : 46, Math.round(w / 24)); P = []; for (var i = 0; i < n; i++) P.push(mk(true)); }
+  function frame(t) {
+    var dt = Math.min(40, t - (last || t)) / 16.7; last = t; ctx.clearRect(0, 0, w, h); ctx.globalCompositeOperation = 'lighter';
+    for (var i = 0; i < P.length; i++) {
+      var p = P[i]; p.ph += .025 * dt; p.y -= p.vy * dt; p.x += (p.vx + Math.sin(p.ph) * .3 * (.3 + p.z)) * dt;
+      if (p.y < -20) { P[i] = mk(false); continue; }
+      var life = Math.min(1, (h - p.y) / (h * .25), p.y / (h * .3) + .15);
+      ctx.globalAlpha = Math.max(0, p.a * life * (.65 + .35 * Math.sin(p.ph * 3.1)));
+      ctx.drawImage(sp, p.x - p.s, p.y - p.s, p.s * 2, p.s * 2);
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  function start() { if (!raf && !document.hidden) { last = 0; raf = requestAnimationFrame(frame); } }
+  function stop() { cancelAnimationFrame(raf); raf = 0; }
+  size(); window.addEventListener('resize', size);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { if (es[0].isIntersecting) start(); else stop(); }).observe(strip); else start();
+  document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); });
+})();
+
+/* ----- menu: every + answers back ----- */
+(function () {
+  var list = document.getElementById('menuList') || document.querySelector('.menu-list') || document.body;
+  if (!document.getElementById('orderBar')) return;
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.qty-plus'); if (!b) return;
+    var c = b.parentNode.querySelector('.qty-count'), bar = document.getElementById('orderBar');
+    setTimeout(function () {
+      if (c) { c.classList.remove('st-pop'); void c.offsetWidth; c.classList.add('st-pop'); }
+      if (still || !bar.animate) return;
+      bar.classList.remove('st-bump'); void bar.offsetWidth; bar.classList.add('st-bump');
+      var a = b.getBoundingClientRect(), t = bar.getBoundingClientRect(), d = document.createElement('i'); d.className = 'st-fly'; document.body.appendChild(d);
+      var x0 = a.left + a.width / 2, y0 = a.top + a.height / 2, x1 = t.left + 44, y1 = Math.min(t.top + t.height / 2, window.innerHeight - 30), mx = (x0 + x1) / 2, my = Math.min(y0, y1) - 90;
+      var an = d.animate([{ transform: 'translate(' + x0 + 'px,' + y0 + 'px) scale(1)', opacity: 1 }, { transform: 'translate(' + mx + 'px,' + my + 'px) scale(1.25)', opacity: 1, offset: .45 }, { transform: 'translate(' + x1 + 'px,' + y1 + 'px) scale(.4)', opacity: .2 }], { duration: 620, easing: 'cubic-bezier(.4,.1,.3,1)' });
+      an.onfinish = function () { d.remove(); };
+    }, 0);
+  });
+})();
+
+/* ----- checkout: sticky send bar ----- */
+(function () {
+  var form = document.getElementById('orderForm'), tot = document.getElementById('orderTotal'); if (!form || !tot) return;
+  var btn = document.createElement('button'); btn.type = 'submit'; btn.setAttribute('form', 'orderForm'); btn.className = 'st-pay';
+  btn.innerHTML = '<span data-sw="Tuma oda kwa WhatsApp">Send order on WhatsApp</span><b></b>';
+  document.body.appendChild(btn); document.body.classList.add('has-pay');
+  var real = form.querySelector('.order-submit'), inView = false, typing = false;
+  function amt() { var t = (tot.textContent || '').trim(); return t && !/^KES\s*0$/i.test(t) ? t : ''; }
+  function upd() { var a = amt(); btn.lastChild.textContent = a; btn.classList.toggle('is-in', !!a && !inView && !typing); }
+  new MutationObserver(upd).observe(tot, { childList: true, characterData: true, subtree: true });
+  if (real && 'IntersectionObserver' in window) new IntersectionObserver(function (es) { inView = es[0].isIntersecting; upd(); }).observe(real);
+  document.addEventListener('focusin', function (e) { if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) { typing = true; upd(); } });
+  document.addEventListener('focusout', function () { typing = false; setTimeout(upd, 50); });
+  upd();
+})();

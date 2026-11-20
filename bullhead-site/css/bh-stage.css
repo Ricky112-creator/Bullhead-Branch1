@@ -82,3 +82,65 @@
 /* the "Open now" pill is fixed; once the hero is gone it only sits on top of body copy */
 .hero-open-badge { transition: opacity .35s ease, transform .35s ease; }
 body.st-past .hero-open-badge { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+
+/* ---------- Gallery: 3D coverflow ---------- */
+.bhc { margin: 6px 0 40px; overflow: hidden; padding-bottom: 34px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); }
+.bhc-stage { position: relative; height: calc(min(72vw, 640px) * .667 + 24px); perspective: 1500px; perspective-origin: 50% 40%; touch-action: pan-y; outline: none; }
+.bhc-stage:focus-visible { box-shadow: 0 0 0 3px var(--cognac); border-radius: 18px; }
+.bhc-item { position: absolute; top: 12px; left: 50%; width: min(72vw, 640px); margin-left: calc(min(72vw, 640px) / -2); aspect-ratio: 3 / 2; border-radius: 18px; overflow: hidden; cursor: pointer; background: var(--cream-deep); box-shadow: 0 24px 50px rgba(36, 23, 18, .32);
+  transform: translateX(calc(var(--d, 0) * 58%)) translateZ(calc(var(--a, 0) * -190px)) rotateY(calc(var(--d, 0) * -32deg)); filter: brightness(calc(1 - var(--a, 0) * .2));
+  transition: transform .95s cubic-bezier(.2, .8, .2, 1), filter .6s ease, opacity .6s ease; will-change: transform; }
+.bhc-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; -webkit-user-drag: none; }
+.bhc-item.is-on { box-shadow: 0 30px 60px rgba(36, 23, 18, .4), 0 0 0 1px rgba(255, 255, 255, .5) inset; }
+.bhc-cap { text-align: center; margin: 14px auto 0; min-height: 2.6em; max-width: 52ch; color: var(--ink); font-weight: 500; }
+.bhc-ui { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 4px; }
+.bhc-b { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(36, 23, 18, .25); background: #fff; color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer; transition: transform .2s ease, background .2s ease, color .2s ease; }
+.bhc-b:hover { background: var(--ink); color: #fff; transform: scale(1.08); }
+.bhc-n { font: 600 .85rem/1 var(--font-body); color: var(--ink-soft); min-width: 4.5em; text-align: center; }
+@media (max-width: 640px) { .bhc-item { transform: translateX(calc(var(--d, 0) * 64%)) translateZ(calc(var(--a, 0) * -160px)) rotateY(calc(var(--d, 0) * -28deg)); width: 78vw; margin-left: -39vw; } .bhc-stage { height: calc(78vw * .667 + 24px); } }
+
+/* grid reveal */
+.gal-grid figure.st-rv { opacity: 0; transform: translateY(26px) scale(.985); transition: opacity .7s ease var(--i, 0ms), transform .8s cubic-bezier(.2, .8, .2, 1) var(--i, 0ms); }
+.gal-grid figure.st-rv.in { opacity: 1; transform: none; }
+.gal-grid figure.st-rv.in:hover { transform: translateY(-4px); transition-delay: 0ms; }
+
+/* ---------- Gallery: viewer ---------- */
+.bhv { position: fixed; inset: 0; z-index: 300; display: flex; align-items: center; justify-content: center; background: rgba(14, 8, 5, .94); opacity: 0; transition: opacity .28s ease; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.bhv[hidden] { display: none; }
+.bhv.is-open { opacity: 1; }
+.bhv-f { margin: 0; max-width: min(92vw, 1200px); display: flex; flex-direction: column; align-items: center; gap: 14px; transform: scale(.96); transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .25s ease; }
+.bhv.is-open .bhv-f { transform: none; }
+.bhv.is-swap .bhv-f { opacity: 0; }
+.bhv-f img { max-width: 100%; max-height: 78vh; border-radius: 12px; box-shadow: 0 30px 80px rgba(0, 0, 0, .6); }
+.bhv-f figcaption { color: #f6efe6; text-align: center; max-width: 60ch; min-height: 1.4em; }
+.bhv-x, .bhv-a { position: absolute; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .12); color: #fff; cursor: pointer; transition: background .2s ease, transform .2s ease; }
+.bhv-x:hover, .bhv-a:hover { background: rgba(255, 255, 255, .26); }
+.bhv-x { top: calc(14px + env(safe-area-inset-top, 0px)); right: 14px; width: 46px; height: 46px; font-size: 1.8rem; line-height: 1; }
+.bhv-a { top: 50%; width: 52px; height: 52px; margin-top: -26px; font-size: 2rem; line-height: 1; }
+.bhv-p { left: 14px; } .bhv-n { right: 14px; }
+.bhv-c { position: absolute; left: 0; right: 0; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); text-align: center; color: rgba(255, 255, 255, .7); font: 600 .85rem/1 var(--font-body); }
+@media (max-width: 640px) { .bhv-a { display: none; } }
+@media (prefers-reduced-motion: reduce) { .bhc-item, .bhv, .bhv-f { transition: none; } .gal-grid figure.st-rv { opacity: 1; transform: none; } }
+
+/* ---------- Embers behind "the kitchen never sleeps" ---------- */
+.strip { position: relative; overflow: hidden; }
+.st-embers { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.strip-line { position: relative; z-index: 1; }
+
+/* ---------- Menu: add-to-order feedback ---------- */
+.qty-count.st-pop { animation: st-pop .45s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes st-pop { 40% { transform: scale(1.45); } }
+.order-bar.st-bump { animation: st-bump .5s ease; }
+@keyframes st-bump { 35% { transform: translateY(-6px) scale(1.02); } }
+.st-fly { position: fixed; z-index: 400; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, #ffd27a, #e8332b 70%); box-shadow: 0 0 14px 4px rgba(232, 51, 43, .55); }
+
+/* ---------- Checkout: sticky send bar (mobile) ---------- */
+.st-pay { display: none; }
+@media (max-width: 759px) {
+  .st-pay { display: flex; position: fixed; z-index: 70; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 20px; border-radius: 100px; border: 0; width: calc(100% - 20px);
+    background: rgba(28, 17, 12, .92); color: #fff; box-shadow: 0 14px 34px rgba(0, 0, 0, .38); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); font: 600 .95rem/1 var(--font-body); cursor: pointer;
+    transform: translateY(140%); transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
+  .st-pay.is-in { transform: none; }
+  .st-pay b { background: var(--red); border-radius: 100px; padding: 14px 20px; font-weight: 700; }
+  body.has-pay { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+}
