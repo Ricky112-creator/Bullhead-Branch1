@@ -66,7 +66,7 @@
   window.fetch = function (input, init) {
     var url = typeof input === 'string' ? input : (input && input.url) || '';
     var method = String((init && init.method) || (input && input.method) || 'GET').toUpperCase();
-    if (method !== 'GET' || !/^(https?:\/\/[^/]+)?\/api\/updates\/?$/.test(url)) return orig.apply(this, arguments);
+    if (method !== 'GET' || !/^(https?:\/\/[^/]+)?\/api\/updates\/?(\?branch=(?:one|two|main))?$/.test(url)) return orig.apply(this, arguments);
     return orig.apply(this, arguments).then(function (r) {
       if (!r || !r.ok) return fake();
       return r.clone().json().then(function (d) { return d && d.updates && d.updates.length ? r : fake(); }, fake);

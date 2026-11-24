@@ -1,12 +1,27 @@
 // GET  /api/menu -> public: per-item overrides { [itemId]: { price?, special?, soldOut?, until? } }
 // POST /api/menu -> owner only: replaces the overrides (body: { menu: {...} })
 // Same KV namespace (UPDATES_KV) and ADMIN_TOKEN as /api/updates.
+//
+// The owner's main dashboard (bullheadhotels.co.ke/admin) can save a board for this branch, or for all sites. This site
+// asks the main site for the board that applies here and compares timestamps with its own saved board: the NEWEST edit
+// wins, wherever it was made. If the main site cannot be reached, this site's own board is used, as before.
 import { json, requireRole } from '../_lib/auth.js';
 
+const MAIN = 'https://bullheadhotels.co.ke', BRANCH = 'one';
+
 export async function onRequestGet({ env }) {
-  const raw = await env.UPDATES_KV.get('menu');
+  const local = await env.UPDATES_KV.getWithMetadata('menu');
   const cust = await env.UPDATES_KV.get('menu-custom');
-  return json({ menu: raw ? JSON.parse(raw) : {}, custom: cust ? JSON.parse(cust) : [] }, { headers: { 'Cache-Control': 'public, max-age=15' } });
+  let menu = local.value ? JSON.parse(local.value) : {}, custom = cust ? JSON.parse(cust) : [];
+  let ts = (local.metadata && local.metadata.ts) || 0;
+  try {
+    const r = await fetch(MAIN + '/api/menu?branch=' + BRANCH, { cf: { cacheTtl: 15, cacheEverything: true } });
+    if (r.ok) {
+      const d = await r.json();
+      if (d && d.menu && typeof d.menu === 'object' && (d.ts || 0) > ts) { menu = d.menu; ts = d.ts; if (Array.isArray(d.custom)) custom = d.custom; }   // the main dashboard saved more recently
+    }
+  } catch (e) { /* main site unreachable: keep this site's own board */ }
+  return json({ menu, custom, ts }, { headers: { 'Cache-Control': 'public, max-age=15' } });
 }
 
 export async function onRequestPost({ request, env }) {
@@ -23,7 +38,7 @@ export async function onRequestPost({ request, env }) {
     if (e.soldOut && m.until && !isNaN(Date.parse(m.until))) e.until = new Date(m.until).toISOString();
     if (Object.keys(e).length) clean[id] = e;
   }
-  await env.UPDATES_KV.put('menu', JSON.stringify(clean));
+  await env.UPDATES_KV.put('menu', JSON.stringify(clean), { metadata: { ts: Date.now() } });
 
   // Owner-added dishes (whole list replaced each save).
   let custom;
